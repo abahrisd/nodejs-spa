@@ -85,9 +85,10 @@ class App extends Component {
         }
 
         if (resData.errors) {
-          throw new Error("User creation failed")
+          throw new Error("User login failed")
         }
-        console.log(resData);
+        
+        console.log('loginHandler', resData);
         const {token, userId} = resData.data.login;
         this.setState({
           isAuth: true,
