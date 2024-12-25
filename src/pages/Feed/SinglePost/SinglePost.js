@@ -18,8 +18,8 @@ class SinglePost extends Component {
       method: 'POST',
       body: JSON.stringify({
         query: `
-          query {
-            post(id: "${postId}") {
+          query FetchPost($postId: ID!) {
+            post(id: $postId) {
               title
               content
               imageUrl
@@ -28,7 +28,10 @@ class SinglePost extends Component {
               }
             }
           }
-        `
+        `,
+        variables: {
+          postId: postId
+        }
       }),
       headers: {
         Authorization: 'Bearer ' + this.props.token,

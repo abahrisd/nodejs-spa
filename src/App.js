@@ -60,13 +60,17 @@ class App extends Component {
     event.preventDefault();
     const qraphqlQuery = {
       query: `
-        {
-          login(email: "${authData.email}", password: "${authData.password}") {
+        query Login($email: String!, $password: String!) {
+          login(email: $email, password: $password) {
             token
             userId
           }
         }
-      `
+      `,
+      variables: {
+        email: authData.email,
+        password: authData.password
+      }
     };
     this.setState({ authLoading: true });
     fetch('http://localhost:8080/graphql', {
@@ -87,7 +91,7 @@ class App extends Component {
         if (resData.errors) {
           throw new Error("User login failed")
         }
-        
+
         console.log('loginHandler', resData);
         const {token, userId} = resData.data.login;
         this.setState({
@@ -120,17 +124,20 @@ class App extends Component {
     this.setState({ authLoading: true });
     const qraphqlQuery = {
       query: `
-        mutation {
-          createUser(userInput: {
-            email: "${authData.signupForm.email.value}",
-            name: "${authData.signupForm.name.value}",
-            password: "${authData.signupForm.password.value}"
-          }) {
+        mutation CreateUser($userInput: UserInputData) {
+          createUser(userInput: $userInput) {
             _id
             email
           }
         }
-      `
+      `,
+      variables: {
+        userInput: {
+          email: authData.email,
+          name: authData.name,
+          password: authData.password
+        }
+      }
     }
     fetch('http://localhost:8080/graphql', {
       method: 'POST',
